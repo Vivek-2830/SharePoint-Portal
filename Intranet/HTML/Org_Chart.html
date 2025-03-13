@@ -1,0 +1,193 @@
+<html>
+    <head>
+        <title></title>
+        <style>
+            #tree {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script src="https://balkangraph.com/js/latest/OrgChart.js"></script>
+    </head>
+    <body>
+        <select style="position: absolute;right: 30px;top: 30px;color: #7a7a7a;font-size: 14px;padding: 10px;background-color: #F57C00;color: #ffffff;width: 100px;z-index:2;" id="selectTemplate">
+            <option>luba</option>
+            <option>olivia</option>
+            <option>derek</option>
+            <option>diva</option>
+            <option>mila</option>
+            <option>polina</option>
+            <option>mery</option>
+            <option>rony</option>
+            <option>belinda</option>
+            <option>ula</option>
+            <option>ana</option>
+            <option>isla</option>
+        </select>
+        <div id="tree"></div>
+        <script type="text/javascript">
+            var AllEmployees = new Array();
+            var chartArray = new Array();
+            window.onload = function () {
+                getEmployees();
+            };
+            function getEmployees(){
+                var orgEmpURL = _spPageContextInfo.webAbsoluteUrl + "/hr/_api/web/lists/GetByTitle('Employee Information')/items?$top=5000&$select=*,AttachmentFiles,ReportsTo/Title&$expand=AttachmentFiles,ReportsTo&$filter=LWD eq null";
+                getItems(orgEmpURL,function(data){
+                    AllEmployees = data.d.results;
+                    for(i=0; i < AllEmployees.length; i++){
+                        var dept = '';
+                        if(AllEmployees[i].Team == 'SharePoint'){
+                            dept = 'SharePoint';
+                        }
+                        else if(AllEmployees[i].Team == 'Java'){
+                            dept = 'Java';
+                        }
+                        else if(AllEmployees[i].Team == 'Management'){
+                            dept = 'Directors';
+                        }
+                        else if(AllEmployees[i].Team == 'Networking'){
+                            dept = 'Networking';
+                        }
+                        else if(AllEmployees[i].Team == '.Net'){
+                            dept = 'DotNet';
+                        }
+                        else if(AllEmployees[i].Team == 'Human Resource'){
+                            dept = 'HRs';
+                        }
+                        else if(AllEmployees[i].Team == 'Testing'){
+                            dept = 'Testing';
+                        }
+                        else if(AllEmployees[i].Team == 'Web & Mobile'){
+                            dept = 'Mobile';
+                        }
+                        else if(AllEmployees[i].Team == 'Front-End/Full-Stack'){
+                            dept = 'FrontEnd';
+                        }
+                        else if(AllEmployees[i].Team == 'BD'){
+                            dept = 'BDs';
+                        }
+
+                        if(dept == 'Directors'){
+                            chartArray.push({id:AllEmployees[i].Id,tags:[dept],name:AllEmployees[i].Title,title:AllEmployees[i].Designation,img:AllEmployees[i].AttachmentFiles.results[0].ServerRelativeUrl});
+                        }else{
+                            chartArray.push({id:AllEmployees[i].Id,pid:AllEmployees[i].ReportsToId,tags:[dept],name:AllEmployees[i].Title,title:AllEmployees[i].Designation,img:AllEmployees[i].AttachmentFiles.results[0].ServerRelativeUrl});
+                        }
+                        if(AllEmployees.length - 1){
+                            bindChart();      
+                        }
+                    }
+                },function(data){});
+            }
+            function bindChart(){
+                var chart = new OrgChart(document.getElementById("tree"), {
+                    template: "olivia",
+                    enableDragDrop: false,
+                    //nodeMouseClick: OrgChart.action.edit,
+                    //nodeMenu: {
+                      //  details: { text: "Details" }
+                        //edit: { text: "Edit" },
+                        //add: { text: "Add" },
+                        //remove: { text: "Remove" }
+                    //},
+                    // dragDropMenu: {
+                    //     addInGroup: { text: "Add in group" },
+                    //     addAsChild: { text: "Add as child" }
+                    // },
+                    nodeBinding: {
+                        field_0: "name",
+                        field_1: "title",
+                        img_0: "img"
+                    },
+                    tags: {
+                        Directors: {
+                            group: true,
+                            groupName: "Management",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        SharePoint: {
+                            group: true,
+                            groupName: "SharePoint Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        HRs: {
+                            group: true,
+                            groupName: "HR Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        BDs: {
+                            group: true,
+                            groupName: "BD Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        Mobile: {
+                            group: true,
+                            groupName: "Mobile Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        Java: {
+                            group: true,
+                            groupName: "Java Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        Networking: {
+                            group: true,
+                            groupName: "Networking Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        DotNet: {
+                            group: true,
+                            groupName: ".Net Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        Testing: {
+                            group: true,
+                            groupName: "Testing Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        WebAndMobile: {
+                            group: true,
+                            groupName: "Web & Mobile Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                        FrontEnd: {
+                            group: true,
+                            groupName: "Front-End/Full-Stack Team",
+                            groupState: OrgChart.EXPAND,
+                            template: "group_grey"
+                        },
+                    },
+                    nodes: chartArray
+                });
+                document.getElementById("selectTemplate").addEventListener("change", function () {
+                    chart.config.template = this.value;
+                    chart.draw();
+                });
+            }
+            function getItems(uri,successCall,faliureCall){
+                $.ajax({
+                    url: uri,
+                    type: "GET",
+                    async:true,
+                    headers: { "ACCEPT": "application/json;odata=verbose" },
+                    success: function (data) {
+                        successCall(data);                               
+                    },
+                    faliure:function(data){
+                    faliureCall(data);
+                    }    
+                });
+            }
+        </script>
+    </body>
+</html>

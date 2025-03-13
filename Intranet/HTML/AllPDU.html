@@ -1,0 +1,601 @@
+﻿<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js" type="text/javascript"></script>
+        <style>
+        	.rating {
+			    float:left;
+			}
+			
+			/* :not(:checked) is a filter, so that browsers that donâ€™t support :checked donâ€™t 
+			   follow these rules. Every browser that supports :checked also supports :not(), so
+			   it doesnâ€™t make the test unnecessarily selective */
+			.rating:not(:checked) > input {
+			    position:absolute;
+			    top:-9999px;
+			    clip:rect(0,0,0,0);
+			}
+			
+			.rating:not(:checked) > label {
+			    float:right;
+			    width:1em;
+			    padding:0 .1em;
+			    overflow:hidden;
+			    white-space:nowrap;
+			    cursor:pointer;
+			    font-size:200%;
+			    line-height:1.2;
+			    color:#ddd;
+			    text-shadow:1px 1px #bbb, 2px 2px #666, .1em .1em .2em rgba(0,0,0,.5);
+			}
+			
+			.rating:not(:checked) > label:before {
+			    content: 'â˜… ';
+			}
+			
+			.rating > input:checked ~ label {
+			    color: #f70;
+			    text-shadow:1px 1px #c60, 2px 2px #940, .1em .1em .2em rgba(0,0,0,.5);
+			}
+			
+			.rating:not(:checked) > label:hover,
+			.rating:not(:checked) > label:hover ~ label {
+			    color: gold;
+			    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
+			}
+			
+			.rating > input:checked + label:hover,
+			.rating > input:checked + label:hover ~ label,
+			.rating > input:checked ~ label:hover,
+			.rating > input:checked ~ label:hover ~ label,
+			.rating > label:hover ~ input:checked ~ label {
+			    color: #ea0;
+			    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
+			}
+			
+			.rating > label:active {
+			    position:relative;
+			    top:2px;
+			    left:2px;
+			}
+			
+			/* end of Lea's code */
+			
+			/*
+			 * Clearfix from html5 boilerplate
+			 */
+			
+			.clearfix:before,
+			.clearfix:after {
+			    content: " "; /* 1 */
+			    display: table; /* 2 */
+			}
+			
+			.clearfix:after {
+			    clear: both;
+			}
+			
+			/*
+			 * For IE 6/7 only
+			 * Include this rule to trigger hasLayout and contain floats.
+			 */
+			
+			.clearfix {
+			    *zoom: 1;
+			}
+        </style>
+    </head>
+    <body>
+        <div class="ds-ceo ds-white">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">UpComing PDU</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Completed PDU</a>
+                </li>
+            </ul><!-- Tab panes -->
+            <div class="tab-content pt-3" style="max-height: none !important;">
+                <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                    <ul class="ds-event-list ds-list list-unstyled" id="UpComingPDU">
+                    </ul>
+                </div>
+                <div class="tab-pane" id="tabs-2" role="tabpanel">
+                    <ul class="ds-event-list ds-list list-unstyled" id="CompletedPDU">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="PDU-popup" class="white-popup mfp-hide">
+			<div class="row">
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">Title</label><br>
+					<span id="TitleSpan" class="labelvaluecolor"></span>
+				</div>
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">Location</label><br>
+					<span id="LocationSpan" class="labelvaluecolor"></span>
+				</div>
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">Start Date and Time</label><br>
+					<span id="StartDateSpan" class="labelvaluecolor"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">End Date and Time</label><br>
+					<span id="EndDateSpan" class="labelvaluecolor"></span>
+				</div>
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">Category</label><br>
+					<span id="CategorySpan" class="labelvaluecolor"></span>
+				</div>
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">Description</label><br>
+					<span id="DescriptionSpan" class="labelvaluecolor"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4 form-group">
+					<label class="labelcolor">Attendees</label><br>
+					<span id="AttendeesSpan" class="labelvaluecolor"></span>
+				</div>			
+			</div>
+		</div>
+
+		<div id="Rating-popup" class="white-popup mfp-hide">
+			<div class="row">
+				<div class="col-md-12 form-group">
+					<label class="labelcolor">Rating <span style="color:red;">*</span></label><br>
+					<div class="rating">
+				        <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="Outstanding">Outstanding</label>
+				        <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="Excellent">Excellent</label>
+				        <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Very Good">Very Good</label>
+				        <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Pretty Good">Pretty Good</label>
+				        <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="Bad">Bad</label>
+				    </div>
+				</div>
+			</div>
+			<!-- <div class="row">
+				<div class="col-md-12 form-group">
+					<label class="labelcolor">Comments</label><br>
+					<textarea type="text" class="form-control" name="des" placeholder="Comments" id="ratingComments" rows="4"></textarea>
+				</div>
+			</div> -->
+			<div class="row">
+				<div class="col-md-12 form-group">
+					<button type="button" class="btn btn-primary" id="btnSubmitRatings">Submit</button>
+	                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelRatings">Cancel</button>	
+				</div>
+			</div>
+        </div>
+        
+        <div class="modal fade" id="AllRating-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">All Ratings</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    <div class="custom-form">
+                            <ul class="ds-rating ds-white mb-3" id="AllRatingDiv"></ul>                        
+                    </div>
+                </div>
+                <div class="modal-footer pb-4 d-flex justify-content-center">
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://200oksolutions.sharepoint.com/sites/DSmart/SiteAssets/DSmart/JS/Common.js"></script>
+        <script type="text/javascript">
+            var isHRTeam = false;
+            var globalItemId = 0;
+            var RatingArray = new Array();
+            var PDUListName = 'PDU Corner';
+            const EventsmonthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            $(document).ready(function(){
+                getUpComingPDUCorner();
+                getCurrentUserGroup().then(function(){
+                    getPDURatings().then(function(value) {
+                        getCompletedPDUCorner();
+                    });
+                });
+                
+                $('#btnCancelRatings').click(function(){
+                    closeAndClearRatingPopup();
+                });
+                $('#btnSubmitRatings').click(function(){
+                    if(validateRatings() == true){
+                        SaveRatings();
+                    }
+                });
+                $('#AllRating-popup').on('hidden.bs.modal', function (e) {
+                  $('#AllRatingDiv').html('');
+                });
+            });
+
+            function SaveRatings(){
+                var ratingData = {  
+                    __metadata: {  
+                        'type': 'SP.Data.PDURatingsListItem'  
+                    },
+                    PDUId:globalItemId,
+                    RatingNumber:parseInt($('input:radio[name=rating]:checked').val())
+                    //Comments:$('#ratingComments').val()
+                };
+                if(parseInt($('input:radio[name=rating]:checked').val()) == 1){
+                    ratingData.RatingText = 'Bad';
+                }
+                else if(parseInt($('input:radio[name=rating]:checked').val()) == 2){
+                    ratingData.RatingText = 'Pretty Good';
+                }
+                else if(parseInt($('input:radio[name=rating]:checked').val()) == 3){
+                    ratingData.RatingText = 'Very Good';
+                }
+                else if(parseInt($('input:radio[name=rating]:checked').val()) == 4){
+                    ratingData.RatingText = 'Excellent';
+                }
+                else if(parseInt($('input:radio[name=rating]:checked').val()) == 5){
+                    ratingData.RatingText = 'Outstanding';
+                }
+                $.ajax({  
+                    url: _spPageContextInfo.webAbsoluteUrl + "/hr/_api/web/lists/GetByTitle('PDU Ratings')/items",  
+                    type: "POST",  
+                    headers: {  
+                        "accept": "application/json;odata=verbose",  
+                        "X-RequestDigest": $("#__REQUESTDIGEST").val(),  
+                        "content-Type": "application/json;odata=verbose"  
+                    },  
+                    data: JSON.stringify(ratingData),
+                    success: function(data) {  
+                        swal({
+                            title: "Success",
+                            text: "Rating submitted successfully!!!",
+                            type: "success"
+                        }, function() {
+                            closeAndClearRatingPopup();
+                            getPDURatings().then(function(value) {
+                                getCompletedPDUCorner();
+                            });
+                        });
+                    },  
+                    error: function(error) {  
+                        alert(JSON.stringify(error));  
+                    }  
+                }); 
+            };
+
+            function validateRatings(){
+                var isValidated = true;
+                if($("input[name='rating']:checked").length == 0){
+                    isValidated = false;
+                    swal("Required","Ratings","error");
+                }
+                return isValidated;
+            }
+
+            function closeAndClearRatingPopup(){
+                $('input[type="radio"][name="rating"]').prop('checked', false);
+                //$('#ratingComments').val('');
+                globalItemId = 0;
+                $.magnificPopup.close();
+            }
+
+            function GetItemTypeForListName(name) {  
+                return "SP.Data." + name.charAt(0).toUpperCase() + name.split(" ").join("").slice(1) + "ListItem";  
+            } 
+            
+            function getPDURatings(){
+                var deferred = $.Deferred();
+                var PDURating_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('PDU Ratings')/items?$top=5000";
+                getItems(PDURating_URL,function(data){
+                    deferred.resolve();
+                    if(data.d.results.length > 0){
+                        RatingArray = data.d.results;
+                    }
+                },function(data){});
+                return deferred.promise();
+            }
+            
+            function getUpComingPDUCorner(){
+                var date = new Date();
+                var PDU_URL = '';
+                if(isHRTeam){
+                    PDU_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('"+PDUListName+"')/items?$filter=EventDate ge datetime'"+date.toISOString()+"'&$top=5000";
+                }else{
+                    PDU_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('"+PDUListName+"')/items?$filter=ParticipantsPickerId eq '"+_spPageContextInfo.userId+"' and EventDate ge datetime'"+date.toISOString()+"'&$top=5000";
+                }
+                getItems(PDU_URL,function(data){
+                    if(data.d.results.length > 0){
+                        var PDUEvents = data.d.results;
+                        for(p=0;p<PDUEvents.length;p++){
+                            var PDUStartDate = new Date(convertDateSharePointFormat(PDUEvents[p].EventDate));
+                            var PDUmonth = EventsmonthNames[PDUStartDate.getMonth()].substr(0, 3);
+                            var PDUday = PDUStartDate.getDate();
+                            var FolderLink = PDUEvents[p].FolderUrl.Url;
+                            var HTMLToAppend = '<li>'+
+                                    '<div class="ds-lists-detail ds-corner">'+
+                                        '<h3><a href="#PDU-popup" class="open-popup-link openPDUDetails" alt="'+PDUEvents[p].Id+'">'+PDUEvents[p].Title+'</a> <a href="'+FolderLink+'" target="_blank"><i class="fa fa-folder-open-o folderIconForPDU" aria-hidden="true"></i></a></h3>'+
+                                        '<p>'+(new Date(PDUEvents[p].EventDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}))+' to '+(new Date(PDUEvents[p].EndDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}))+'</p>'+
+                                    '</div>'+
+                                    '<div class="ds-date">'+
+                                        '<p>'+PDUday.toString()+' '+PDUmonth.toString()+'</p>'+
+                                    '</div>'+
+                                '</li>'
+                            
+                            $('#UpComingPDU').last().append(HTMLToAppend);
+                            $('.open-popup-link').magnificPopup({
+                            // you may add other options here, e.g.:
+                            preloader: true,
+                            
+                            callbacks: {
+                                open: function() {
+                                                    },
+                                close: function() {
+                                clearPDU();
+                                }
+                                // e.t.c.
+                            }
+                            });
+                            $('.openPDUDetails').click(function(){
+                                var itemId = parseInt($(this).attr("alt"));	
+                                getPDUDetails(itemId);
+                            });
+                        }
+                    }else{
+                        $('#UpComingPDU').last().append('<li><p class="text-center no-records">No PDUs to show as of now.</p></li>');
+                    }
+                },function(data){})
+            }
+            
+            function getCompletedPDUCorner(){
+                var date = new Date();
+                var PDU_URL = '';
+                if(isHRTeam){
+                    PDU_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('"+PDUListName+"')/items?$filter=EventDate le datetime'"+date.toISOString()+"'&$top=5000";
+                }else{
+                    PDU_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('"+PDUListName+"')/items?$filter=ParticipantsPickerId eq '"+_spPageContextInfo.userId+"' and EventDate le datetime'"+date.toISOString()+"'&$top=5000";
+                }
+                getItems(PDU_URL,function(data){
+                    if(data.d.results.length > 0){
+                        $('#CompletedPDU').html('');
+                        var PDUEvents = data.d.results;
+                        $(PDUEvents).each(function(index,value){
+                            var showRatingLink = '';
+                            if(isHRTeam){
+                                showRatingLink = '<a href="javascript:;" data-toggle="modal" alt="'+value.Id+'" data-target="#AllRating-popup" class="open-popup-allRating open-allRating">See Ratings</a>';
+                            }else{
+                                var getSubmittedArray = RatingArray.filter(function (el) { return el.PDUId == value.Id && el.AuthorId == _spPageContextInfo.userId });
+                                if(getSubmittedArray.length == 0){
+                                    showRatingLink = '<a href="#Rating-popup" class="open-popup-rating open-rating" alt="'+value.Id+'">Add Ratings</a>';
+                                }
+                            }
+                            var getSubmittedRatingsArray = RatingArray.filter(function (el) { return el.PDUId == value.Id });
+                            var ratingOptions = '';
+                            var ratingBadChecked = '';
+                            var ratingPrettyGoodChecked = '';
+                            var ratingVeryGoodChecked = '';
+                            var ratingExcellentChecked = '';
+                            var ratingOutstandingChecked = '';
+                            if(getSubmittedRatingsArray.length > 0){
+                                var submittedCount = getSubmittedRatingsArray.length * 5;
+                                var ratings = 0;
+                                $(getSubmittedRatingsArray).each(function(index,value){
+                                    ratings = ratings + parseInt(value.RatingNumber);
+                                });
+                                var overAllRating = (ratings / submittedCount) * 100;
+                                if(overAllRating > 0 && overAllRating <= 20){
+                                    ratingBadChecked = 'checked="checked"';
+                                }
+                                else if(overAllRating > 20 && overAllRating <= 40){
+                                    ratingPrettyGoodChecked = 'checked="checked"';
+                                }
+                                else if(overAllRating > 40 && overAllRating <= 60){
+                                    ratingVeryGoodChecked = 'checked="checked"';
+                                }
+                                else if(overAllRating > 60 && overAllRating <= 80){
+                                    ratingExcellentChecked = 'checked="checked"';
+                                }
+                                else if(overAllRating > 80 && overAllRating <= 100){
+                                    ratingOutstandingChecked = 'checked="checked"';
+                                }
+                            }
+                            else{
+                                ratingOptions += '<input type="radio" id="starOverall5'+value.Id+'" name="rating'+value.Id+'" value="5" disabled="disabled"/><label for="starOverall5" title="Outstanding">Outstanding</label>'+
+                                                '<input type="radio" id="starOverall4'+value.Id+'" name="rating'+value.Id+'" value="4" disabled="disabled"/><label for="starOverall4" title="Excellent">Excellent</label>'+
+                                                '<input type="radio" id="starOverall3'+value.Id+'" name="rating'+value.Id+'" value="3" disabled="disabled"/><label for="starOverall3" title="Very Good">Very Good</label>'+
+                                                '<input type="radio" id="starOverall2'+value.Id+'" name="rating'+value.Id+'" value="2" disabled="disabled"/><label for="starOverall2" title="Pretty Good">Pretty Good</label>'+
+                                                '<input type="radio" id="starOverall1'+value.Id+'" name="rating'+value.Id+'" value="1" disabled="disabled"/><label for="starOverall1" title="Bad">Bad</label>';
+                            }
+                            var PDUStartDate = new Date(convertDateSharePointFormat(value.EventDate));
+                            var PDUmonth = EventsmonthNames[PDUStartDate.getMonth()].substr(0, 3);
+                            var PDUday = PDUStartDate.getDate();
+                            var FolderLink = value.FolderUrl.Url;
+                            var HTMLToAppend = '<li>'+
+                                    '<div class="ds-lists-detail ds-corner">'+
+                                        '<h3><a href="#PDU-popup" class="open-popup-link openPDUDetails" alt="'+value.Id+'">'+value.Title+'</a> <a href="'+FolderLink+'" target="_blank"><i class="fa fa-folder-open-o folderIconForPDU" aria-hidden="true"></i></a></h3>'+
+                                        '<p>'+PDUday.toString()+' '+PDUmonth.toString()+'</p>'+
+                                        '<p>'+(new Date(value.EventDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}))+' to '+(new Date(value.EndDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}))+'</p>'+
+                                    '</div>'+
+                                    '<div class="ds-date">'+
+                                        '<p>'+showRatingLink+'</p>'+
+                                        '<p><div class="rating">'+
+                                            '<input type="radio" id="starOverall5'+value.Id+'" name="rating'+value.Id+'" value="5" disabled="disabled" '+ratingOutstandingChecked+'/><label for="starOverall5'+value.Id+'" title="Outstanding">Outstanding</label>'+
+                                            '<input type="radio" id="starOverall4'+value.Id+'" name="rating'+value.Id+'" value="4" disabled="disabled" '+ratingExcellentChecked+'/><label for="starOverall4'+value.Id+'" title="Excellent">Excellent</label>'+
+                                            '<input type="radio" id="starOverall3'+value.Id+'" name="rating'+value.Id+'" value="3" disabled="disabled" '+ratingVeryGoodChecked+'/><label for="starOverall3'+value.Id+'" title="Very Good">Very Good</label>'+
+                                            '<input type="radio" id="starOverall2'+value.Id+'" name="rating'+value.Id+'" value="2" disabled="disabled" '+ratingPrettyGoodChecked+'/><label for="starOverall2'+value.Id+'" title="Pretty Good">Pretty Good</label>'+
+                                            '<input type="radio" id="starOverall1'+value.Id+'" name="rating'+value.Id+'" value="1" disabled="disabled" '+ratingBadChecked+'/><label for="starOverall1'+value.Id+'" title="Bad">Bad</label>'+
+                                        '</div></p>'+                            
+                                    '</div>'+
+                                '</li>';
+                            
+                            $('#CompletedPDU').last().append(HTMLToAppend);
+                            $('.open-popup-link').magnificPopup({
+                                // you may add other options here, e.g.:
+                                preloader: true,
+                                
+                                callbacks: {
+                                    open: function() {
+                                                        },
+                                    close: function() {
+                                        clearPDU();
+                                    }
+                                    // e.t.c.
+                                }
+                            });
+                            $('.open-popup-rating').magnificPopup({
+                                // you may add other options here, e.g.:
+                                preloader: true,
+                                
+                                callbacks: {
+                                    open: function() {
+                                                        },
+                                    close: function() {
+                                        closeAndClearRatingPopup();
+                                    }
+                                    // e.t.c.
+                                }
+                            });
+                            
+                            $('.openPDUDetails').click(function(){
+                                var itemId = parseInt($(this).attr("alt"));	
+                                getPDUDetails(itemId);
+                            });
+                            $('.open-rating').click(function(){
+                                globalItemId = parseInt($(this).attr("alt"));
+                            });
+                        });
+
+                        if(isHRTeam){
+                            $('.open-allRating').click(function(){
+                                globalItemId = parseInt($(this).attr("alt"));
+                                getAllRatings();
+                            });
+                        }
+                    }else{
+                        $('#CompletedPDU').last().append('<li><p class="text-center no-records">No PDUs to show as of now.</p></li>');
+                    }
+                },function(data){})
+            }
+
+            function getAllRatings(){
+                var PDUAllRating_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('PDU Ratings')/items?$select=*,Author/Title,Author/EMail&$expand=Author&$filter=PDUId eq "+globalItemId+"&$top=5000";
+                getItems(PDUAllRating_URL,function(data){
+                    if(data.d.results.length > 0){
+                        $('#AllRatingDiv').html('');
+                        var AllRatingArray = data.d.results;
+                        var HTMLToAppend = '';
+                        for(i = 0; i < AllRatingArray.length; i++){
+                            var ParticipantImageurl = getMyPictureUrl(_spPageContextInfo.webAbsoluteUrl,AllRatingArray[i].Author.EMail,"S");
+                            var ratingBadChecked = '';
+                            var ratingPrettyGoodChecked = '';
+                            var ratingVeryGoodChecked = '';
+                            var ratingExcellentChecked = '';
+                            var ratingOutstandingChecked = '';
+                            if(AllRatingArray[i].RatingNumber == 5){
+                                ratingOutstandingChecked = 'checked="checked"';
+                            }
+                            else if(AllRatingArray[i].RatingNumber == 4){
+                                ratingExcellentChecked = 'checked="checked"';
+                            }
+                            else if(AllRatingArray[i].RatingNumber == 3){
+                                ratingVeryGoodChecked = 'checked="checked"';
+                            }
+                            else if(AllRatingArray[i].RatingNumber == 2){
+                                ratingPrettyGoodChecked = 'checked="checked"';
+                            }
+                            else if(AllRatingArray[i].RatingNumber == 1){
+                                ratingBadChecked = 'checked="checked"';
+                            }
+                            HTMLToAppend += '<div class="rating-info">'+
+                                                '<div class="avatar"><img src="'+ParticipantImageurl+'" alt="'+AllRatingArray[i].Author.Title+'" class="img-fluid rounded-circle"></div>'+
+                                                '<div class="info">'+
+                                                    '<p class="rating"><input type="radio" class="star5" name="ratingModal'+AllRatingArray[i].Id+'" value="5" disabled="disabled" '+ratingOutstandingChecked+'/><label for="star5" title="Outstanding">Outstanding</label>'+
+                                                    '<input type="radio" class="star4" name="ratingModal'+AllRatingArray[i].Id+'" value="4" disabled="disabled" '+ratingExcellentChecked+'/><label for="star4" title="Excellent">Excellent</label>'+
+                                                    '<input type="radio" class="star3" name="ratingModal'+AllRatingArray[i].Id+'" value="3" disabled="disabled" '+ratingVeryGoodChecked+'/><label for="star3" title="Very Good">Very Good</label>'+
+                                                    '<input type="radio" class="star2" name="ratingModal'+AllRatingArray[i].Id+'" value="2" disabled="disabled" '+ratingPrettyGoodChecked+'/><label for="star2" title="Pretty Good">Pretty Good</label>'+
+                                                    '<input type="radio" class="star1" name="ratingModal'+AllRatingArray[i].Id+'" value="1" disabled="disabled" '+ratingBadChecked+'/><label for="star1" title="Bad">Bad</label></p>'+
+                                                '</div>'+
+                                                //'<p>'+(AllRatingArray[i].Comments == null ? '' : AllRatingArray[i].Comments)+'</p>'+
+                                            '</div>';
+                            
+                            if(i == AllRatingArray.length - 1){
+                                $('#AllRatingDiv').append(HTMLToAppend);
+                            }
+                        }
+                    }else{
+                        $('#AllRatingDiv').html('<div class="col-md-12"><p>Still ratings are not been submitted by participants.</p></div>');
+                    }
+                },function(data){});
+            }
+
+            function getPDUDetails(itemId){
+                var PDU_URL = _spPageContextInfo.webAbsoluteUrl+"/hr/_api/web/lists/getbytitle('"+PDUListName+"')/items?$select=*,ParticipantsPicker/Title&$expand=ParticipantsPicker&$filter=Id eq '"+itemId+"'";
+                getItems(PDU_URL,function(data){
+                    if(data.d.results.length > 0){
+                        var attendees = '';
+                        if(data.d.results[0].ParticipantsPicker.results.length > 0){
+                            var attendeesArray = new Array();
+                            for(w=0;w<data.d.results[0].ParticipantsPicker.results.length;w++){
+                                attendeesArray.push(data.d.results[0].ParticipantsPicker.results[w].Title);
+                            }
+                            attendees = attendeesArray.toString();
+                        }
+                        $('#TitleSpan').text(data.d.results[0].Title);
+                        $('#LocationSpan').text(data.d.results[0].Location == null ? '' : data.d.results[0].Location);
+                        $('#StartDateSpan').text(data.d.results[0].EventDate == null ? '' : convertDateSharePointFormat(data.d.results[0].EventDate));
+                        $('#EndDateSpan').text(data.d.results[0].EndDate == null ? '' : convertDateSharePointFormat(data.d.results[0].EndDate));
+                        $('#CategorySpan').text(data.d.results[0].Category == null ? '' : data.d.results[0].Category);
+                        $('#DescriptionSpan').text(data.d.results[0].Description == null ? '' : data.d.results[0].Description);
+                        $('#AttendeesSpan').text(attendees);
+                    }    
+                },function(data){})
+            }
+
+            function clearPDU(){
+                $('#TitleSpan').text('');
+                $('#LocationSpan').text('');
+                $('#StartDateSpan').text('');
+                $('#EndDateSpan').text('');
+                $('#CategorySpan').text('');
+                $('#DescriptionSpan').text('');
+                $('#AttendeesSpan').text('');
+            }
+
+            function getCurrentUserGroup(){
+                var deferred = $.Deferred();
+                var requestUri = _spPageContextInfo.webAbsoluteUrl + "/_api/web/GetUserById(" + _spPageContextInfo.userId+ ")/Groups";
+                $.ajax({
+                        url: requestUri,
+                        type: "GET",
+                        async:false,
+                        headers: { "ACCEPT": "application/json;odata=verbose" },
+                        success: function (data) {
+                            deferred.resolve();
+                            if(data.d.results.length >0){
+                                for(i=0;i<data.d.results.length;i++){
+                                    //var groupName = 'Project Management Owners'
+                                    var groupName = 'HR Team';
+                                    if(data.d.results[i].Title == groupName){
+                                        isHRTeam = true;
+                                    }
+                                }
+                            }                                 
+                    },    
+                });
+                return deferred.promise();
+            }
+
+            function getMyPictureUrl(webUrl,accountName,size){
+                return webUrl + "/_layouts/15/userphoto.aspx?size=" + size + "&accountname=" + accountName;
+            }
+        </script>
+    </body>
+</html>

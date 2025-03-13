@@ -1,0 +1,6 @@
+﻿/* Hide Left Navigation */
+#sideNavBox{display:none;}
+#contentBox{margin-left:0px;margin-right:0;padding-top: 0px;display:table;width:100%;}
+
+/* Hide Page Title */
+.ms-core-pageTitle, .ms-core-pageTitle a{display:none;}

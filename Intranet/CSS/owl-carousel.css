@@ -1,0 +1,49 @@
+.owl-nav{
+    display: none;
+}
+
+.owl-carousel .owl-item img{
+    height: 96px;
+}
+
+.owl-carousel .owl-item .item h4{
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    color: #414141;
+    text-align: center;
+    margin: 0;
+}
+
+.owl-carousel .owl-item .item p{
+    font-size: 11px;
+    line-height: 25px;
+    letter-spacing: 0.5px;
+    color: #989898;
+    text-align: center;
+}
+
+.owl-ds-card .owl-item img{
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 17px;
+}
+
+.owl-dots {
+  text-align: center;
+  padding-top: 15px;
+}
+.owl-dots button.owl-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #e1e1e1;
+  margin: 0 3px;
+}
+.owl-dots button.owl-dot.active {
+  background-color: #9bc241;
+}
+.owl-dots button.owl-dot:focus {
+  outline: none;
+}

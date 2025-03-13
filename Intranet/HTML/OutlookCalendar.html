@@ -1,0 +1,34 @@
+﻿<html>
+    <head>
+        <title></title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    </head>
+    <body>
+    	<div class="ds-message ds-white">
+            <h2 class="ds-title">Outlook Calendar Events</h2>
+            <div style="text-align:center;">
+            	<img src="/sites/DSmart/SiteAssets/DSmart/Images/loading.gif?ctag=191110" id="loadingIcon" style="display:none;">
+            </div>
+	        <ul id="outlookCalendarData" class="ds-widget list-unstyled">            
+		        
+	        </ul>
+	        <!-- Modal Data -->
+            <div class="modal fade" id="modalOutlookCalendarData" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	            <div class="modal-dialog" role="document">
+	                <div class="modal-content">
+		                <div class="modal-header text-center">
+		                    <h4 class="modal-title w-100 font-weight-bold ds-title" id="EventHeaderTitle"></h4>
+		                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                    <span aria-hidden="true">&times;</span>
+		                    </button>
+		                </div>
+		                <div class="modal-body mx-3" id="modalBodyContent">
+		                </div>
+	                </div>
+	            </div>
+	        </div>
+        </div>
+        <script src="https://200oksolutions.sharepoint.com/sites/DSmart/SiteAssets/DSmart/JS/Common.js"></script>
+        <script src="https://200oksolutions.sharepoint.com/sites/DSmart/SiteAssets/DSmart/JS/OutlookCalendar.js"></script>
+     </body>
+</html>

@@ -1,0 +1,162 @@
+﻿<style>
+.view{height: 165px;}
+.card-img-top {height: 100%;}
+.card-body {padding: 10px 5px;min-height: 170px;max-height: 170px;}
+.card-title {font-size: 18px;margin-bottom: 5px;font-weight: 400;line-height: 22px !important;}
+.indigo-text {font-size: 14px;font-weight: normal!important;padding: 0!important;}
+.card{margin-bottom: 15px;}
+.mobile{color:#2196F3}
+</style>
+
+<!--<div class="row">
+    <div class="col-md-4 form-group">
+        <label>Department</label>
+        <select class='form-control' id="departments">
+            <option value="Account Team">Account Team</option>
+            <option value="Admin">Admin</option>
+            <option value="Business Development">Business Development</option>
+            <option value="Business Intelligence">Business Intelligence</option>
+            <option value="Data Visualization">Data Visualization</option>
+            <option value="Human Resource">Human Resource</option>
+            <option value="Mobile Development">Mobile Development</option>
+            <option value="Operations">Operations</option>
+            <option value="PMO">PMO</option>
+            <option value="Quality Assurance">Quality Assurance</option>
+            <option value="Web Development">Web Development</option>
+        </select>
+    </div>
+</div>-->
+
+<div class="row" id="teamDiv">
+    <div class="col-md-12" style="text-align: center;">
+        <img src="/sites/Intranet/Style%20Library/Intranet/Images/loading.gif" id="loadingIcon"/>
+    </div>
+</div>
+
+<script type="text/javascript"> 
+    var empArray = new Array();
+    var filterDept = '';
+    $(document).ready(function(){
+        //filterDept = getUrlParameter('Dept');
+        if(filterDept == 'Web & Mobile'){
+            filterDept = 'Web & Mobile';
+        }
+        else if(filterDept == 'SharePointDeveloper'){
+            filterDept = 'SharePoint Developer';
+        }
+        else if(filterDept == 'Management'){
+            filterDept = 'Management';
+        }
+        getAllEmployees();
+        //getAccessToken();
+        //$('#departments').val(filterDept);
+        //$('#departments').change(function(){
+            //displayEmployeesbyDepartment($('#departments').val());
+        //});
+    });
+    function getAccessToken(){
+        $.ajax({
+	    url: "https://cors-anywhere.herokuapp.com/https://app.keka.com/connect/token",
+	    data: { grant_type:"kekaapi", client_id:"499afe21-bef1-437b-976c-4d17e2eeb273", client_secret:"dIPyxcolrrjbzBvzDLpK", scope:"kekaapi openid profile offline_access", apikey:"5ByZ4rTekpxcMvs6s4URqxTA9Swid+1AmO0x5FfaiN8=" },
+	    type: "POST",
+	    headers:{ "Content-Type": 'application/x-www-form-urlencoded'},
+	    success: function(data) {
+	    	getAllEmployees(data.access_token); 
+	    }
+	});
+    }
+    function getAllEmployees(){
+        var AllEmployeeURL = _spPageContextInfo.webAbsoluteUrl + "/hr/_api/web/lists/GetByTitle('Employee Information')/items?$top=5000&$select=*,AttachmentFiles,Title&$expand=AttachmentFiles&$filter=LWD eq null&$orderBy=Id desc";
+        getItems(AllEmployeeURL,function(data){
+            results = data.d.results;
+            displayEmployeesbyDepartment(results);
+        },function(data){});
+    }
+    function getAllEmployees1(accessToken){
+        $.ajax({
+            url: _spPageContextInfo.webAbsoluteUrl + "/hr/_api/web/lists/GetByTitle('Employee Information')/items?$top=5000&$select=*,AttachmentFiles,Title&$expand=AttachmentFiles&$filter=LWD eq null&$orderBy=Id desc",
+            type: 'GET',
+            headers: {
+                "Content-Type": 'application/json', 
+                "Accept":"*/*",
+                "Cache-Control": 'no-cache',
+            },
+            success: function (data) { 
+                empArray = data.d.results;
+                displayEmployeesbyDepartment(empArray);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                myException = thrownError;
+                alert('Exeption:' + thrownError + " options : " + ajaxOptions + " xhr : " + xhr);
+        
+            }
+        });
+    }
+    function displayEmployeesbyDepartment(filteredEmps){
+        //var filteredEmps = new Array();
+        //filteredEmps = empArray.filter((element) => element.groups.some((subElement) => subElement.title === dept));
+        $('#teamDiv').html('');
+        if(filteredEmps.length > 0){
+            for(i=0;i<filteredEmps.length;i++){
+                var Imageurl = filteredEmps[i].AttachmentFiles.results[0].ServerRelativeUrl;
+                $('#teamDiv').last().append('<div class="col-md-2">'+
+                                        '<div class="card card-cascade">'+
+                                            '<div class="view view-cascade overlay">'+
+                                                '<img class="card-img-top" src="'+Imageurl+'" alt="Card image cap"><a>'+
+                                                '<div class="mask rgba-white-slight"></div>'+
+                                                '</a>'+
+                                            '</div>'+
+                                            '<div class="card-body card-body-cascade text-center">'+
+                                                '<h4 class="card-title">'+filteredEmps[i].Title+'</h4>'+
+                                                '<h6 class="font-weight-bold indigo-text py-2">'+filteredEmps[i].Designation+'</h6>'+
+                                                '<a href="mailto:'+filteredEmps[i].EmailId+'" target="_top" class="card-text">'+filteredEmps[i].EmailId+'</a>'+
+                                                '<p class="card-text mobile">'+(filteredEmps[i].MobileNumber == null ? '' : filteredEmps[i].MobileNumber)+'</p>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'); 
+            }
+        }else{
+            $('#teamDiv').last().append('<div class="col-md-12" style="text-align:center;">There are no employees in this department as of now.</div>');
+        }
+    }
+    function getMyPictureUrl(webUrl,accountName,size){
+        return webUrl + "/_layouts/15/userphoto.aspx?size=" + size + "&accountname=" + accountName;
+    }
+    function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+    
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    }	
+    function getItems(uri,successCall,faliureCall){
+        $.ajax({
+            url: uri,
+            type: "GET",
+            async:true,
+            headers: { "ACCEPT": "application/json;odata=verbose" },
+            success: function (data) {
+                successCall(data);                               
+            },
+            faliure:function(data){
+            faliureCall(data);
+            }    
+        });
+    }
+    function convertDateSharePointFormat(dateToFormat){
+        var d= new Date(dateToFormat);
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        var output = ((''+month).length < 2 ? '0' : '') + month + '/' + ((''+day).length<2 ? '0' : '') + day + '/' + d.getFullYear();
+        return output;
+    }
+
+</script>
+<!-- Card -->

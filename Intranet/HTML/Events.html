@@ -1,0 +1,48 @@
+﻿<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div class="ds-ceo ds-white">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Upcoming Events</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Upcoming Trainings</a>
+                </li>
+            </ul><!-- Tab panes -->
+            <div class="tab-content pt-3">
+                <div class="tab-pane active" id="tabs-1" role="tabpanel">
+			        <ul id="upcomingEventsData" class="ds-event-list ds-list list-unstyled"></ul>
+                </div>
+                <div class="tab-pane" id="tabs-2" role="tabpanel">
+			        <ul id="upcomingTrainingsData" class="ds-event-list ds-list list-unstyled"></ul>
+                </div>
+
+		      </div>
+		      
+		      <!-- Modal Data -->
+		        <div class="modal fade" id="modalEventTraining" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		            <div class="modal-dialog" role="document">
+		                <div class="modal-content">
+			                <div class="modal-header text-center">
+			                    <h4 class="modal-title w-100 font-weight-bold ds-title">Events and Trainings</h4>
+			                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <span aria-hidden="true">&times;</span>
+			                    </button>
+			                </div>
+			                <div class="modal-body">
+				           		<div id="EventsContentModal">
+				           		
+				           		</div>
+			                </div>
+		                </div>
+		            </div>
+		        </div>
+		        
+        </div>
+        <script src="/sites/Intranet/Style%20Library/Intranet/JS/Common.js"></script>
+        <script src="/sites/Intranet/Style%20Library/Intranet/JS/Events.js?ver=23"></script>
+    </body>
+</html>

@@ -1,0 +1,97 @@
+﻿<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div class="ds-quote ds-white">
+            <a href="javascript:;" id="ThoughtMessage" data-toggle="modal" data-target="#modalThoughtMessage" class="openMorningMantra"></a>
+        </div>
+        <!-- Modal Data -->
+        <div class="modal fade" id="modalThoughtMessage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+	                <div class="modal-header text-center">
+	                    <h4 class="modal-title w-100 font-weight-bold ds-title">Morning Mantra</h4>
+	                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                    </button>
+	                </div>
+	                <div class="modal-body">
+		           		<div id="ThoughtMessageContentModal">
+		           		
+		           		</div>
+	                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <script src="../SiteAssets/HomePage/JS/Common.js"></script>
+        <script src="../SiteAssets/HomePage/JS/ThoughtoftheDay.js"></script> --> 
+        <script>
+        $(document).ready(function () {
+            getMorningMantra();
+            $('.openMorningMantra').click(function(){
+                $('#ThoughtMessageContentModal').html('');
+                var Id = parseInt($(this).attr('data-id'));
+                if(Id > 0){
+                    var morningMatraPopupURL = _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('Morning Mantra')/Items?select=*&$filter=Id eq "+Id+"&$top=5000";
+                    getItems(morningMatraPopupURL,function(data){
+                        var morningMantraResults = data.d.results;
+                        if(morningMantraResults.length > 0){
+                            $('#ThoughtMessageContentModal').append('<h3>'+morningMantraResults[0].Title+'</h3><br/><p>'+(morningMantraResults[0].Body == null ? '' : morningMantraResults[0].Body)+'</p>');
+                        }else{
+                            $('#ThoughtMessageContentModal').append('<p>There is no Morning mantra for today.</p>');
+                        }
+                    },function(data){});
+                }else{
+                    $('#ThoughtMessageContentModal').append('<p>There is no Morning mantra for today.</p>');
+                }
+            });
+        });
+        function getMorningMantra(){
+            var morningMatraURL = _spPageContextInfo.webAbsoluteUrl + "/_api/web/Lists/GetByTitle('Morning Mantra')/Items?select=*&$filter=Expires eq '"+convertDateSharePointFormat(new Date)+"'&$top=5000&$orderBy=Id desc";
+            getItems(morningMatraURL,function(data){
+                var morningMantraResults = data.d.results;
+                if(morningMantraResults.length > 0){
+                    $('#ThoughtMessage').append('<span>Morning Mantra :</span> '+morningMantraResults[0].Title);
+                    $('#ThoughtMessage').attr('data-id',morningMantraResults[0].Id);
+                }else{
+                    $('#ThoughtMessage').append('<div>No morning mantra for today.</div>');
+                    $('#ThoughtMessage').attr('data-id',0);
+                }
+            },function(data){})
+        }
+        function getThoughts(){
+            $.ajax({
+                url: 'https://cors-anywhere.herokuapp.com/https://www.brainyquote.com/link/quotebr.rss',
+                type: 'GET',
+                dataType: "xml"
+            }).done(function(xml) {
+                $.each($("item", xml), function(i, e) {
+        
+                    var blogNumber = i + 1 + ". ";
+        
+                    var itemURL = ($(e).find("link"));
+                    var blogURL = "<a href='" + itemURL.text() + "'>" + itemURL.text() +"</a>";
+        
+                    var itemTitle = ($(e).find("description"));
+                    $('#ThoughtMessage').html('');
+                    $('#ThoughtMessage').append('<span>Thought for the day :</span>'+itemTitle.text())
+                    //var blogTitle = "<h4>" + blogNumber + itemTitle.text() + "</h4>";
+        
+                    //$("#feed").append(blogTitle);
+                    //$("#feed").append(blogURL);
+        
+                });
+            });
+        }
+        function convertDateSharePointFormat(dateToFormat){
+            var d= new Date(dateToFormat);
+            var month = d.getMonth() + 1;
+            var day = d.getDate();
+            var output = ((''+month).length < 2 ? '0' : '') + month + '/' + ((''+day).length<2 ? '0' : '') + day + '/' +  d.getFullYear();
+            return output;
+        }
+    </script>
+    </body>
+</html>

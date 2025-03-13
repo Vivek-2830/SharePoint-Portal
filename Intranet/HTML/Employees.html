@@ -1,0 +1,160 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Employees</title>
+</head>
+
+<body>
+	<div class="filter-box" align="center">
+	    <button class="filter-button active" data-filter="All">All</button>
+	    <button class="filter-button" data-filter="Management">Management</button>
+	    <button class="filter-button" data-filter="SharePoint">SharePoint</button>
+	    <button class="filter-button" data-filter="Java">Java</button>
+	    <button class="filter-button" data-filter="DotNet">.Net</button>
+	    <button class="filter-button" data-filter="Mobile">Web & Mobile</button>
+	    <button class="filter-button" data-filter="BDs">BD</button>
+	    <button class="filter-button" data-filter="FrontEnd">Front-End/Full-Stack</button>
+	    <button class="filter-button" data-filter="HRs">Human Resource</button>
+	    <button class="filter-button" data-filter="Networking">Networking</button>	    
+	    <button class="filter-button" data-filter="Testing">Testing</button>
+	</div>
+	<div class="employeeList">
+		<div class="row" id="employeeList">
+		
+		</div>
+	</div>
+	<script>
+		$(document).ready(function(){
+			getEmployees();
+		    $(".filter-button").click(function(e){
+		    	e.preventDefault();
+		        var value = $(this).attr('data-filter');
+		        
+		        if(value == "All")
+		        {
+		            $('.filter').show('1000');
+		        }
+		        else
+		        {
+		            $(".filter").not('.'+value).hide('3000');
+		            $('.filter').filter('.'+value).show('3000');		            
+		        }
+		        if ($(".filter-button").removeClass("active")) {
+					$(this).removeClass("active");
+				}
+				$(this).addClass("active");
+		    });			
+		});
+
+		function getEmployees(){
+		var orgEmpURL = _spPageContextInfo.webAbsoluteUrl + "/_api/web/lists/GetByTitle('Employee Information')/items?$top=5000&$select=*,AttachmentFiles,ReportsTo/Title&$expand=AttachmentFiles,ReportsTo&$filter=(LWD eq null) and (Status eq 1)";
+		getItems(orgEmpURL,function(data){
+		AllEmployees = data.d.results;
+		
+		for(i=0; i < AllEmployees.length; i++){
+		
+		var dept = '';
+		if(AllEmployees[i].Team == 'SharePoint'){
+		dept = 'SharePoint';
+		}
+		else if(AllEmployees[i].Team == 'Java'){
+		dept = 'Java';
+		}
+		else if(AllEmployees[i].Team == 'Management'){
+		dept = 'Management';
+		}
+		else if(AllEmployees[i].Team == 'Networking'){
+		dept = 'Networking';
+		}
+		else if(AllEmployees[i].Team == '.Net'){
+		dept = 'DotNet';
+		}
+		else if(AllEmployees[i].Team == 'Human Resource'){
+		dept = 'HRs';
+		}
+		else if(AllEmployees[i].Team == 'Testing'){
+		dept = 'Testing';
+		}
+		else if(AllEmployees[i].Team == 'Web & Mobile'){
+		dept = 'Mobile';
+		}
+		else if(AllEmployees[i].Team == 'Front-End/Full-Stack'){
+		dept = 'FrontEnd';
+		}
+		else if(AllEmployees[i].Team == 'BD'){
+		dept = 'BDs';
+		}
+		var profilePic = "";
+		if(AllEmployees[i].AttachmentFiles.results.length > 0){
+			profilePic = AllEmployees[i].AttachmentFiles.results[0].ServerRelativeUrl;
+		}
+		else{
+			profilePic = _spPageContextInfo.siteAbsoluteUrl+"/Style Library/Intranet/Images/Default-User.png";
+		}
+
+
+		// var bloodGroup = "";
+		// if(AllEmployees[i].BloodGroup.length > 0){
+		// 	bloodGroup = AllEmployees[i].BloodGroup;
+		// }
+		// else{
+		// 	bloodGroup = "-";
+		// }
+		
+		// let formattedDOB = new Date(AllEmployees[i].DOB.trim()).toLocaleDateString('en-GB', {
+    	// day: '2-digit', month: '2-digit', year: 'numeric'
+		// });
+
+		let dob = new Date(AllEmployees[i].DOB.trim());
+		let formattedDOB = ('0' + dob.getDate()).slice(-2) + '-' +  ('0' + (dob.getMonth() + 1)).slice(-2) + '-' + dob.getFullYear();
+
+		let bloodGroup = AllEmployees[i].BloodGroup ? AllEmployees[i].BloodGroup : '-';
+
+		$('#employeeList').last().append('<div class="col-md-4 filter '+dept+'">'+
+		'<div class="employee-profile-card">'+
+		'<div class="card-body employee-profile-header">'+
+		'<div class="profile-picture-container">'+
+		'<div>'+
+		'<img class="profile-picture" src="'+profilePic+'">'+
+		'</div>'+
+		'</div>'+
+		'<div class="employee-details">'+
+		'<h4>'+
+		'<a href="/sites/Intranet/Pages/EmployeeProfile.aspx?empid='+AllEmployees[i].Id+'">'+AllEmployees[i].Title+'</a>'+
+		'</h4>'+
+		'<span>'+AllEmployees[i].Designation+'</span>'+
+		'<div>'+
+		'<span class="text-secondary">Department : </span>'+AllEmployees[i].Team+'</div>'+
+		'<div>'+
+		'<span class="text-secondary">Email : </span>'+AllEmployees[i].EmailId+'</div>'+
+	    '<div>'+	
+	    '<span class="text-secondary">DOB : </span>'+formattedDOB+'</div>'+
+		'<div>'+
+		'<span class="text-secondary">BloodGroup : </span>'+bloodGroup+'</div>'+
+		'</div>'+
+		'</div>'+
+		'</div>'+
+		'</div>');
+		}
+		},function(data){});
+		}
+		
+		function getItems(uri,successCall,faliureCall){
+		$.ajax({
+		url: uri,
+		type: "GET",
+		async:true,
+		headers: { "ACCEPT": "application/json;odata=verbose" },
+		success: function (data) {
+		successCall(data); 
+		},
+		faliure:function(data){
+		faliureCall(data);
+		} 
+		});
+		}
+	</script>
+</body>
+
+</html>

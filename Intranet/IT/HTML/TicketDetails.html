@@ -1,0 +1,243 @@
+﻿<html>
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js" type="text/javascript"></script>
+        
+        <style>
+            .required{
+                border-bottom-color:red !important;
+            }
+            .btn-primary:hover {
+                background-color: #0069d9 !important;
+                border-color: #0062cc !important;
+            }
+            .btn-primary {
+                color: #fff !important;
+                background-color: #007bff !important;
+                border-color: #007bff !important;
+            }
+            .btn-danger {
+                color: #fff !important;
+                background-color: #dc3545 !important;
+                border-color: #dc3545 !important;
+            }
+            .btn-danger:hover {
+                color: #fff !important;
+                background-color: #c82333 !important;
+                border-color: #bd2130 !important;
+            }
+            .btn-warning {
+                color: #fff !important;
+                background-color: #ec971f !important;
+                border-color: #d58512 !important;
+            }
+            .btn-warning:hover {
+                color: #fff !important;
+                background-color: #ec971f !important;
+                border-color: #d58512 !important;
+            }
+            .btn-success {
+                color: #fff !important;
+                background-color: #218838 !important;
+                border-color: #1e7e34 !important;
+            }
+            .btn-success:hover {
+                color: #fff !important;
+                background-color: #218838 !important;
+                border-color: #1e7e34 !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">New Ticket</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="custom-form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="Subject" placeholder="Subject*"  id="title"/>
+                                <span style="color:red;display: none;" id="titleSpan">This field is required.</span>
+                            </div>
+                            <div class="form-group">
+                                <textarea type="text" class="form-control" name="des" placeholder="Description" id="description" rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="priority">
+                                    <option value="">Select Priority*</option>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>        
+                                <span style="color:red;display: none;" id="prioritySpan">This field is required.</span>                
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" id="ticketType">
+                                </select>       
+                                <span style="color:red;display: none;" id="ticketTypeSpan">This field is required.</span>                 
+                            </div>
+                            <div class="form-group">
+                                <input type="file" multiple="multiple" class="form-control" placeholder="Attachments" id="attachments" />       
+                                <span style="color:red;display: none;" id="ticketTypeSpan">This field is required.</span>                 
+                            </div>
+                            <div class="form-group" style="display: none;" id="previousAttachmentDiv">
+                                <label>Previous Attachments</label>
+                                <div id="previousAttachments"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-4 d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary" id="btnSubmitTicket">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalCommentsForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Add Comments</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    <div class="custom-form">
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" name="des" placeholder="Comments" id="comments" rows="4"></textarea>
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <ul class="commentList" id="CommentsByITTeam"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4 d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" id="btnInProgressTicket">In Progress</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveComments">On Hold</button>
+                    <button type="button" class="btn btn-success" id="btnSubmitComments">Completed</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelComments">Cancel</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalUserCommentsForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Add Comments</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    <div class="custom-form">
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" name="des" placeholder="Comments" id="userComments" rows="4"></textarea>
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <ul class="commentList" id="CommentsByUser"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4 d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" id="btnUserComments">Submit</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnUserCancelComments">Cancel</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="CommentsForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h4 class="modal-title w-100 font-weight-bold">All Comments</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body mx-3">
+                        <div class="custom-form">
+                            <div class="form-group">
+                                <ul class="commentList" id="allComments"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="modal fade" id="modalAssignForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title w-100 font-weight-bold">Assign to Team</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body mx-3">
+                    <div class="custom-form">
+                        <div class="form-group">
+                            <select class="form-control" id="assignedTo">
+                            </select>       
+                            <span style="color:red;display: none;" id="assignedToSpan">This field is required.</span>                 
+                        </div>
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" name="des" placeholder="Comments" id="adminComments" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pb-4 d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" id="btnAssignTicket">Submit</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelAssignTicket">Cancel</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ds-ticket-wrapper pb-5 ds-white">
+            <div class="ds-ticket-inner">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item" id="myTicketsLI">
+                        <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab" id="pendingOrMyRequest">My Tickets</a>
+                    </li>
+                    <li class="nav-item" id="pendingTicketsLI" style="display: none;">
+                        <a class="nav-link" data-toggle="tab" href="#pendingRequests" role="tab">Pending Tickets</a>
+                    </li>
+                    <li class="nav-item" id="allRequestLI" style="display: none;">
+                        <a class="nav-link" data-toggle="tab" href="#allRequests" role="tab">All Tickets</a>
+                    </li>
+                </ul>
+                <div class="ds-new" id="createNewTicketDiv">
+                    <a href="#" data-toggle="modal" data-target="#modalContactForm"><span><i class="fa fa-plus"></i></span>Add new</a>
+                </div>
+            </div>
+
+            <div class="tab-content pt-md-3 pl-4 pr-4">
+                <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                    <div class="table-responsive" id="MyTicketDiv"></div>
+                </div>
+                <div class="tab-pane" id="pendingRequests" role="tabpanel">
+                    <div class="table-responsive" id="PendingTicketDiv"></div>
+                </div>
+                <div class="tab-pane" id="allRequests" role="tabpanel">
+                    <div class="table-responsive" id="AllTicketDiv"></div>
+                </div>                                                
+            </div>
+        </div>
+        <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/Intranet/Style%20Library/Intranet/IT/JS/TicketDetails.js?ver=2"></script>
+    </body>
+</html>

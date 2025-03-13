@@ -1,0 +1,605 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Employee Profile</title>
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css'>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
+<script src='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js" type="text/javascript"></script>
+
+<style>
+.EmployeeProfile .tab-content{padding-top: 0;max-height: none;min-height: auto;overflow: inherit;}
+.editLink{float:right;}
+.tab-contentArea{display:block;clear:both;}
+.image-container {position: relative;}
+.image {opacity: 1;display: block;width: 100%;height: auto;transition: .5s ease;backface-visibility: hidden;}
+.middle {transition: .5s ease;opacity: 0;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);-ms-transform: translate(-50%, -50%);text-align: center;}
+.image-container:hover .image {opacity: 0.3;}
+.image-container:hover .middle {opacity: 1;}
+
+.d-block i{width: 20px;text-align: center;margin-right: 5px;}
+
+.documentList {display: block;padding-left: 20px !important;margin: 10px 0 !important;}
+.remove {margin-left: 15px;}
+.remove i {color: #ff0000;font-size: 18px;vertical-align: middle;}
+.check {margin-left: 15px;}
+.check i {color: #4CAF50;font-size: 18px;vertical-align: middle;}
+
+</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card EmployeeProfile">
+                    <div class="card-body">
+                        <div class="card-title mb-4">
+                            <div class="d-flex justify-content-start">
+                                <div class="image-container">
+                                    <img src="/sites/Intranet/Style Library/Intranet/Images/Default-User.png" id="imgProfile" style="width: 150px; height: 150px" class="img-thumbnail" />
+                                    <div class="middle" id="profilePictureBox">
+                                        <input type="button" class="btn btn-secondary" id="btnChangePicture" value="Change" />
+                                        <input type="file" style="display: none;" id="profilePicture" name="file" />
+                                    </div>
+                                </div>
+                                <div class="userData ml-3">
+                                    <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold"><a href="javascript:void(0);" id="headerName"></a></h2>
+                                    <!--<h6 class="d-block"><i class="fa fa-map-marker" aria-hidden="true"></i> Ahmedabad</h6>-->
+                                    <h6 class="d-block"><i class="fa fa-envelope-o" aria-hidden="true"></i> <span id="headerEmail"></span></h6>
+                                    <h6 class="d-block"><i class="fa fa-phone" aria-hidden="true"></i> <span id="headerMobileNumber"></span></h6>
+                                </div>
+                                <div class="ml-auto">
+                                    <!--<input type="button" class="btn btn-primary d-none" id="btnDiscard" value="Discard Changes" />-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="basicInfo-tab" data-toggle="tab" href="#Profile" role="tab" aria-controls="basicInfo" aria-selected="true">Profile</a>
+                                    </li>
+                                    <li class="nav-item documentsTab" style="display: none;">
+                                        <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content ml-1" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="Profile" role="tabpanel" aria-labelledby="basicInfo-tab">
+										<a class="editLink editProfile" href="#profileEdit" style="display: none;">Edit</a>
+										<a class="editLink editHRProfile" href="#profileEditHR" style="display: none;">Edit</a>
+                                        <div class="tab-contentArea">                                        	
+	                                        <div class="row">
+	                                            <div class="col-sm-3 col-md-2 col-5">
+	                                                <label style="font-weight:bold;">Name: </label>
+	                                            </div>
+	                                            <div class="col-md-8 col-6">
+	                                                <span id="lblName"></span>
+	                                            </div>
+	                                        </div>
+	                                        <hr />	
+	                                        <div class="row">
+	                                            <div class="col-sm-3 col-md-2 col-5">
+	                                                <label style="font-weight:bold;">Designation: </label>
+	                                            </div>
+	                                            <div class="col-md-8 col-6">
+	                                                <span id="lblDesignation"></span>
+	                                            </div>
+	                                        </div>
+	                                        <hr />	                                        
+	                                        <div class="row">
+	                                            <div class="col-sm-3 col-md-2 col-5">
+	                                                <label style="font-weight:bold;">Department: </label>
+	                                            </div>
+	                                            <div class="col-md-8 col-6">
+	                                            	<span id="lblDepartment"></span>
+	                                            </div>
+	                                        </div>
+	                                        <hr />
+	                                        <div class="row">
+	                                            <div class="col-sm-3 col-md-2 col-5">
+	                                                <label style="font-weight:bold;">Work Email: </label>
+	                                            </div>
+	                                            <div class="col-md-8 col-6">
+	                                                <span id="lblWorkEmail"></span>
+	                                            </div>
+	                                        </div>
+											<hr />
+											<!-- <div class="row">
+	                                            <div class="col-sm-3 col-md-2 col-5">
+	                                                <label style="font-weight:bold;">Skype ID: </label>
+	                                            </div>
+	                                            <div class="col-md-8 col-6">
+	                                                <span id="lblSkypeID"></span>
+	                                            </div>
+	                                        </div>
+											<hr /> -->
+											<div class="row">
+	                                            <div class="col-sm-3 col-md-2 col-5">
+	                                                <label style="font-weight:bold;">Reports To: </label>
+	                                            </div>
+	                                            <div class="col-md-8 col-6">
+		                                            <span id="lblReportsTo"></span>
+	                                            </div>
+	                                        </div>
+											<hr />
+											<div class="otherDetails" style="display: none;">
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Mobile Number: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblMobileNumber"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">DOB: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblDOB"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">DOJ: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblDOJ"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">LWD: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblLWD"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Current Address: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblCurrentAddress"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Permanent Address: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblPermanentAddress"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Gender: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblGender"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Marital Status: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblMaritalStatus"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Blood Group: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblBloodGroup"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Personal Email: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblPersonalEmail"></span>
+													</div>
+												</div>
+												<hr />
+												<div class="row">
+													<div class="col-sm-3 col-md-2 col-5">
+														<label style="font-weight:bold;">Employee Number: </label>
+													</div>
+													<div class="col-md-8 col-6">
+														<span id="lblEmployeeNumber"></span>
+													</div>
+												</div>
+												<hr />
+											</div>
+										</div>
+                                    </div>
+                                    <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+                                    	<div class="row">
+	                                    	<div class="col-md-2">
+												<label class="control-label text-right" for="filename"><span>PAN Card:-</span></label>
+											</div>
+											<div class="col-md-3 form-group">                                        
+		                                        <div class="input-group">
+							                        <input type="hidden" name="filename" value="">
+							                        <input type="file" id="uploadedPanCard" name="uploadedFile" class="form-control form-control-sm">
+							                        <div class="input-group-btn">
+							                            <input type="button" value="Upload" class="rounded-0 btn btn-primary" id="submitPanCard">
+							                        </div>
+							                    </div>
+							                    <ul class="documentList PanCardList"></ul>
+						                    </div>
+						                    <div class="col-md-2"></div>
+						                    <div class="col-md-2">
+												<label class="control-label text-right" for="filename"><span>Passport:-</span></label>
+											</div>
+											<div class="col-md-3 form-group">                                        
+		                                        <div class="input-group">
+							                        <input type="hidden" name="filename" value="">
+							                        <input type="file" id="uploadedPassport" name="uploadedFile" class="form-control form-control-sm">
+							                        <div class="input-group-btn">
+							                            <input type="button" value="Upload" class="rounded-0 btn btn-primary" id="submitPassport">
+							                        </div>
+												</div>
+												<ul class="documentList PassportList"></ul>
+						                    </div>
+					                    </div>
+					                    <div class="row">
+	                                    	<div class="col-md-2">
+												<label class="control-label text-right" for="filename"><span>Aadhaar Card:-</span></label>
+											</div>
+											<div class="col-md-3 form-group">                                        
+		                                        <div class="input-group">
+							                        <input type="hidden" name="filename" value="">
+							                        <input type="file" id="uploadedAadhaarCard" name="uploadedFile" class="form-control form-control-sm">
+							                        <div class="input-group-btn">
+							                            <input type="button" value="Upload" class="rounded-0 btn btn-primary" id="submitAadhaarCard">
+							                        </div>
+												</div>
+												<ul class="documentList AadharList"></ul>
+											</div>
+											<div class="col-md-2"></div>
+						                    <div class="col-md-2">
+												<label class="control-label text-right" for="filename"><span>Voter Id:-</span></label>
+											</div>
+											<div class="col-md-3 form-group">                                        
+		                                        <div class="input-group">
+							                        <input type="hidden" name="filename" value="">
+							                        <input type="file" id="uploadedVoterId" name="uploadedFile" class="form-control form-control-sm">
+							                        <div class="input-group-btn">
+							                            <input type="button" value="Upload" class="rounded-0 btn btn-primary" id="submitVoterId">
+							                        </div>
+												</div>
+												<ul class="documentList VoterIdList"></ul>
+						                    </div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<label class="control-label text-right" for="filename"><span>Driver's License:-</span></label>
+											</div>
+											<div class="col-md-3 form-group">                                        
+		                                        <div class="input-group">
+							                        <input type="hidden" name="filename" value="">
+							                        <input type="file" id="uploadedDriverLicense" name="uploadedFile" class="form-control form-control-sm">
+							                        <div class="input-group-btn">
+							                            <input type="button" value="Upload" class="rounded-0 btn btn-primary" id="submitDriverLicense">
+							                        </div>
+												</div>
+												<ul class="documentList DrivingLicenseList"></ul>
+											</div>
+										</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="profileEdit" class="white-popup mfp-hide">
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Name <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="Name" id="txtName">
+        </div>
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Mobile Number <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="MobileNumber" id="txtMobileNumber">
+		</div>
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Date of Birth <span style="color:red;">*</span></label><br>
+			<input type="date" class="form-control" name="DOB" id="txtDOB">
+		</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Permanent Address <span style="color:red;">*</span></label><br>
+            <textarea type="text" class="form-control" name="PermanentAddress" id="txtPermanentAddress" rows="4"></textarea>
+        </div>
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Current Address <span style="color:red;">*</span></label><br>
+            <textarea type="text" class="form-control" name="CurrentAddress" id="txtCurrentAddress" rows="4"></textarea>
+		</div>
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Gender <span style="color:red;">*</span></label><br>
+			<select class="form-control" id="genderList">
+				<option value="">Select Gender</option>
+				<option value="Male">Male</option>
+				<option value="Female">Female</option>
+			</select>
+		</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Marital Status <span style="color:red;">*</span></label><br>
+            <select class="form-control" id="maritalStatusList">
+	            <option value="">Select Marital Status</option>
+                <option value="Single">Single</option>
+				<option value="Married">Married</option>
+				<option value="Widowed">Widowed</option>
+				<option value="Divorced">Divorced</option>
+            </select>
+        </div>
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Blood Group <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="BloodGroup" id="txtBloodGroup">
+		</div>
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Personal Email <span style="color:red;">*</span></label><br>
+			<input type="email" class="form-control" name="PersonalEmail" id="txtPersonalEmail">
+		</div>
+	</div>	
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <button type="button" class="btn btn-primary" id="btnSubmitEmployeeInformation">Submit</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelProfile">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="profileEditHR" class="white-popup mfp-hide">
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Name <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="Name" id="txtNameHR">
+		</div>
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Designation <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="Name" id="txtdesignationHR">
+		</div>
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Department <span style="color:red;">*</span></label><br>
+            <select class="form-control" name="designation" id="departmentHR">
+				<option value="SharePoint">SharePoint</option>
+				<option value="Java">Java</option>
+				<option value="Management">Management</option>
+				<option value="Networking">Networking</option>
+				<option value=".Net">.Net</option>
+				<option value="Human Resource">Human Resource</option>
+				<option value="Testing">Testing</option>
+				<option value="Web & Mobile">Web & Mobile</option>
+				<option value="Front-End/Full-Stack">Front-End/Full-Stack</option>
+				<option value="BD">BD</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Work Email <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="Name" id="txtWorkEmailHR">
+		</div>
+		<!-- <div class="col-md-4 form-group">
+            <label class="labelcolor">Skype ID <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="Name" id="txtSkypeIDHR">
+		</div> -->
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Reports To <span style="color:red;">*</span></label><br>
+			<select class="form-control" name="ReportsTo" id="ReportsToHR"></select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Mobile Number <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="MobileNumber" id="txtMobileNumberHR">
+		</div>
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Date of Birth <span style="color:red;">*</span></label><br>
+			<input type="date" class="form-control" name="DOB" id="txtDOBHR">
+		</div>
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Date of Joining <span style="color:red;">*</span></label><br>
+			<input type="date" class="form-control" name="DOB" id="txtDOJHR">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Last Working Day </label><br>
+			<input type="date" class="form-control" name="LWD" id="txtLWDHR">
+		</div>
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Current Address <span style="color:red;">*</span></label><br>
+            <textarea type="text" class="form-control" name="CurrentAddress" id="txtCurrentAddressHR" rows="4"></textarea>
+		</div>
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Permanent Address <span style="color:red;">*</span></label><br>
+            <textarea type="text" class="form-control" name="PermanentAddress" id="txtPermanentAddressHR" rows="4"></textarea>
+        </div>
+	</div>
+    <div class="row">
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Gender <span style="color:red;">*</span></label><br>
+			<select class="form-control" id="genderListHR">
+				<option value="">Select Gender</option>
+				<option value="Male">Male</option>
+				<option value="Female">Female</option>
+			</select>
+		</div>
+		<div class="col-md-4 form-group">
+            <label class="labelcolor">Marital Status <span style="color:red;">*</span></label><br>
+            <select class="form-control" id="maritalStatusListHR">
+	            <option value="">Select Marital Status</option>
+                <option value="Single">Single</option>
+				<option value="Married">Married</option>
+				<option value="Widowed">Widowed</option>
+				<option value="Divorced">Divorced</option>
+            </select>
+        </div>
+        <div class="col-md-4 form-group">
+            <label class="labelcolor">Blood Group <span style="color:red;">*</span></label><br>
+            <input type="text" class="form-control" name="BloodGroup" id="txtBloodGroupHR">
+		</div>
+	</div>
+    <div class="row">
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Personal Email <span style="color:red;">*</span></label><br>
+			<input type="email" class="form-control" name="PersonalEmail" id="txtPersonalEmailHR">
+		</div>
+		<div class="col-md-4 form-group">
+			<label class="labelcolor">Employee Number <span style="color:red;">*</span></label><br>
+			<input type="text" class="form-control" name="EmployeeNumber" id="txtEmployeeNumberHR">
+		</div>
+	</div>	
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <button type="button" class="btn btn-primary" id="btnHRSubmitEmployeeInformation">Submit</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnHRCancelProfile">Cancel</button>
+        </div>
+    </div>
+</div>
+    
+<script type="text/javascript">
+var tempImageSrc = "";
+$(document).ready(function () {
+    $imgSrc = $('#imgProfile').attr('src');
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imgProfile').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $('#btnChangePicture').on('click', function () {
+        // document.getElementById('profilePicture').click();
+        if (!$('#btnChangePicture').hasClass('changing')) {
+            $('#profilePicture').click();
+        }
+        else {
+			if(tempImageSrc != ""){
+				deleteProfilePicture('imgProfile',tempImageSrc);
+			}else{
+				uploadFiles($('#profilePicture')[0].files[0], 'Employee Information', globalItemId);
+			}
+        }
+    });
+    $('#profilePicture').on('change', function () {
+        readURL(this);
+        $('#btnChangePicture').addClass('changing');
+        $('#btnChangePicture').attr('value', 'Confirm');
+        //$('#btnDiscard').removeClass('d-none');
+		$('#imgProfile').attr('src', '');
+    });
+    /*$('#btnDiscard').on('click', function () {
+        // if ($('#btnDiscard').hasClass('d-none')) {
+        $('#btnChangePicture').removeClass('changing');
+        $('#btnChangePicture').attr('value', 'Change');
+        $('#btnDiscard').addClass('d-none');
+        $('#imgProfile').attr('src', $imgSrc);
+        $('#profilePicture').val('');
+        // }
+    });*/
+});	
+$('.editProfile').magnificPopup({
+    preloader: true,
+    callbacks: {
+        open: function() {
+                            },
+        close: function() {
+            clearPopUp();
+        }
+    }
+});
+
+$('#btnCancelProfile').click(function(){
+	$.magnificPopup.close();
+	clearPopUp();		
+});
+
+function clearPopUp(){
+    $('#txtName').val('');
+    $('#txtMobileNumber').val('');
+    $('#txtDOB').val('');
+	$('#txtPermanentAddress').val('');    
+	$('#txtCurrentAddress').val('');    
+	$('#genderList').val(''); 
+	$('#maritalStatusList').val('');    
+	$('#txtBloodGroup').val('');    
+	$('#txtPersonalEmail').val('');    
+}
+
+function uploadFiles(file, listname, ID) {
+    var getFileBuffer = function (file) {
+
+        var deferred = $.Deferred();
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            deferred.resolve(e.target.result);
+        }
+
+        reader.onerror = function (e) {
+            deferred.reject(e.target.error);
+        }
+
+        reader.readAsArrayBuffer(file);
+
+        return deferred.promise();
+    };
+
+    getFileBuffer(file).then(function (buffer) {
+
+        $.ajax({
+            url: _spPageContextInfo.webAbsoluteUrl +
+             "/_api/web/lists/getbytitle('" + listname + "')/items(" + ID + ")/AttachmentFiles/add(FileName='" + file.name + "')",
+            method: 'POST',
+            data: buffer,
+            async: false,
+            processData: false,
+            headers: {
+                "Accept": "application/json; odata=verbose",
+                "content-type": "application/json; odata=verbose",
+                "X-RequestDigest": document.getElementById("__REQUESTDIGEST").value,
+                "content-length": buffer.byteLength
+			},
+			success:function(data){
+				getAttachments();
+			}
+        });
+
+    });
+}
+</script>
+<script src="/sites/Intranet/Style%20Library/Intranet/JS/EmployeesProfile.js?ver=5"></script>
+</body>
+</html>

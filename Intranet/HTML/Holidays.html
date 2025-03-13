@@ -1,0 +1,51 @@
+﻿<html>
+    <head>
+        <title></title>
+        <style>
+        .table td{
+            padding: 5px 10px !important;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="ds-announs ds-white">
+            <h2 class="ds-title">Holidays</h2>
+            <ul class="ds-event-list ds-widget list-unstyled" id="Holidays">
+                
+            </ul>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                getHolidays();
+            });
+            function getHolidays(){
+                var holidaysURL = _spPageContextInfo.webAbsoluteUrl + "/_api/Web/Lists/getByTitle('Holidays')/items?$select=*,AttachmentFiles&$expand=AttachmentFiles&$top=5000&$orderBy=Date asc";
+                getItems(holidaysURL,function(data){
+                    var holidaysResults = data.d.results;
+                    if(holidaysResults.length > 0){
+                        for(b=0;b<holidaysResults.length;b++){
+                            var ImageURl = '';
+                            if(holidaysResults[b].AttachmentFiles.results.length > 0){
+                                ImageURl = holidaysResults[b].AttachmentFiles.results[0].ServerRelativeUrl;
+                            }
+                            var tempDate = getSharePointSiteTimeZone(holidaysResults[b].Date);
+
+                            $('#Holidays').last().append('<li><img src="'+ImageURl+'">'+
+                                    '<div class="ds-widget-inner">'+
+                                        '<h3>'+holidaysResults[b].Title+'</h3>'+
+                                        //'<p>'+convertDateSharePointFormat(holidaysResults[b].Date)+' - ('+getDayOfWeek(new Date(holidaysResults[b].Date))+')</p> '+
+                                        '<p>'+getSharePointSiteTimeZone(holidaysResults[b].Date).format('dd MMM yyyy')+' - ('+getDayOfWeek(new Date(getSharePointSiteTimeZone(holidaysResults[b].Date)))+')</p> '+
+                                    '</div></li>');
+                        }
+                    }else{
+                        $('#Holidays').last().append('There are no holidays in current year');
+                    }
+                },function(data){})
+            }
+            function getDayOfWeek(date) {
+                var dayOfWeek = new Date(date).getDay();    
+                return isNaN(dayOfWeek) ? null : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+            }
+        </script>
+    </body>
+</html>

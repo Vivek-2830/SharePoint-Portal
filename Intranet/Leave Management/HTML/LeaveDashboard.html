@@ -1,0 +1,166 @@
+<html>
+    <head>
+        <title></title>
+        <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css'>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css">
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js" type="text/javascript"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" type="text/javascript"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/DSmart/_layouts/15/sp.runtime.js"></script>
+	    <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/DSmart/_layouts/15/sp.js"></script>
+	    <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/DSmart/_layouts/15/clienttemplates.js"></script>
+	    <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/DSmart/_layouts/15/clientforms.js">  </script>
+	    <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/DSmart/_layouts/15/clientpeoplepicker.js"></script>
+        <script type="text/javascript" src="https://200oksolutions.sharepoint.com/sites/DSmart/_layouts/15/autofill.js"></script>
+        <style>
+            .ds-ticket-wrapper .table tbody th, .ds-ticket-wrapper .table tbody td {padding: 10px !important;}
+            .status{display: table;text-align: center;padding: 4px;margin: -4px;border-radius: 4px;}
+            .rejected{background: #ff0000;color: #ffff;}
+            .pending{background: #ffff00;color: #000000;}
+            .approved{background: #008000;color: #ffffff;}
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="info-tile tile-orange">
+                    <div class="tile-heading">
+                        <p id="sickLeavesCounter"></p>
+                        <span>Sick Leaves Balance</span>
+                    </div>
+                    <!-- <div class="tile-icon">
+                        <i class="fa fa-exclamation-circle"></i>
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-tile tile-blue">
+                    <div class="tile-heading">
+                        <p id="paidLeavesCounter"></p>
+                        <span>Paid Leaves Balance</span>
+                    </div>
+                    <!-- <div class="tile-icon">
+                        <i class="fa fa-exclamation-circle"></i>
+                    </div> -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-tile tile-red">
+                    <div class="tile-heading">
+                        <p id="unpaidLeavesCounter"></p>
+                        <span>Unpaid Leaves applied</span>
+                    </div>
+                    <!-- <div class="tile-icon">
+                        <i class="fa fa-exclamation-circle"></i>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="ds-ticket-wrapper pb-5 ds-white">
+            <div class="ds-ticket-inner">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item" id="pendingForApprovalLI" style="display: none;">
+                        <a class="nav-link active" data-toggle="tab" href="#tabs-3" role="tab">Pending for Approval</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-1" role="tab" ID="myPendingLeaves">My Leaves Pending for Approval</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Leave History</a>
+                    </li>
+                </ul>
+                <div class="ds-new" id="createNewTicketDiv">
+                    <a href="#ticketForm" class="open-newLeaveApplication"><span><i class="fa fa-plus"></i></span>Add new</a>
+                </div>
+            </div>
+
+            <div class="tab-content pt-md-3 pl-4 pr-4">
+                <div class="tab-pane active" id="tabs-3" role="tabpanel">
+                    <div class="table-responsive" id="pendingForApprovalLeaves"></div>
+                </div>
+                <div class="tab-pane" id="tabs-1" role="tabpanel">
+                    <div class="table-responsive" id="pendingLeaves"></div>
+                </div>
+                <div class="tab-pane" id="tabs-2" role="tabpanel">
+                    <div class="table-responsive" id="ticketHistory"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ticketForm" class="white-popup mfp-hide">
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <label class="labelcolor">Start Date <span style="color:red;">*</span></label><br>
+                    <input type="text" class="form-control" name="Start Date" id="startDate"/>
+                    <div class="startRadio" style="display: none;">
+                        <label class="radio-inline"><input type="radio" name="startDateRadio" value="First half">First half</label>
+                        <label class="radio-inline"><input type="radio" name="startDateRadio" value="Second half">Second half</label>
+                    </div>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label class="labelcolor">End Date <span style="color:red;">*</span></label><br>
+                    <input type="text" class="form-control" name="End Date" id="endDate"/>
+                    <div class="endRadio" style="display: none;">
+                        <label class="radio-inline"><input type="radio" name="endDateRadio" value="First half">First half</label>
+                        <label class="radio-inline"><input type="radio" name="endDateRadio" value="Second half">Second half</label>
+                    </div>
+                </div>
+                <div class="col-md-4 form-group duration" style="display: none;">
+                    <label class="labelcolor">Duration <span style="color:red;">*</span></label><br>
+                    <select class="form-control" id="duration" disabled="disabled">
+                        <option value="Full day">Full day</option>
+                        <option value="First half">First half</option>
+                        <option value="Second half">Second half</option>
+                    </select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label class="labelcolor">Leave Type <span style="color:red;">*</span></label><br>
+                    <select class="form-control" id="leaveType">
+                        <option value="">Select Leave Type</option>
+                        <option value="Sick Leave">Sick Leave</option>
+                        <option value="Paid Leave">Paid Leave</option>
+                        <option value="Unpaid Leave">Unpaid Leave</option>
+                    </select>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label class="labelcolor">Notify Users</label><br>
+                    <div id="NotifyUsersDiv" style="width:100%" class="form-control"></div>
+                    <span id="NotifyUsersPicker" style="display: none;"></span>
+                </div>
+                <div class="col-md-4 form-group">
+                    <label class="labelcolor">Description <span style="color:red;">*</span></label><br>
+                    <textarea type="text" class="form-control" name="des" id="description" rows="4"></textarea>
+                </div>
+            </div>	
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <button type="button" class="btn btn-primary" id="btnSubmitLeaves">Request leave</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelNewLeaveForm">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="commentsForm" class="white-popup mfp-hide">
+            <div class="row">
+                <div class="col-md-12 form-group">
+                    <label class="labelcolor">Comments</label><br>
+                    <textarea type="text" class="form-control" name="des" id="comments" rows="4"></textarea>
+                </div>
+            </div>		
+            <div class="row">
+                <div class="col-md-4 form-group">
+                    <button type="button" class="btn btn-primary" id="btnSubmitComments">Submit</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnCancelCommentsForm">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://200oksolutions.sharepoint.com/sites/Intranet/Style%20Library/Intranet/JS/Common.js"></script>
+        <script type="text/javascript" src="/sites/Intranet/SiteAssets/LeaveDashboard.js"></script>
+    </body>
+</html>
